@@ -8,20 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		22C1B58D20C4A4030016A82E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1B58C20C4A4030016A82E /* AppDelegate.swift */; };
-		22C1B58F20C4A4030016A82E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1B58E20C4A4030016A82E /* ViewController.swift */; };
-		22C1B59220C4A4030016A82E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22C1B59020C4A4030016A82E /* Main.storyboard */; };
+		22C1B58F20C4A4030016A82E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1B58E20C4A4030016A82E /* MainViewController.swift */; };
 		22C1B59420C4A4040016A82E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22C1B59320C4A4040016A82E /* Assets.xcassets */; };
 		22C1B59720C4A4040016A82E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22C1B59520C4A4040016A82E /* LaunchScreen.storyboard */; };
+		22E1908120C6DD5900601014 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E1908020C6DD5900601014 /* SnapKit.framework */; };
+		22E1908220C6DD5900601014 /* SnapKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22E1908020C6DD5900601014 /* SnapKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		22E1907F20C6DCC900601014 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				22E1908220C6DD5900601014 /* SnapKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		22C1B58920C4A4030016A82E /* What Now.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What Now.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C1B58C20C4A4030016A82E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		22C1B58E20C4A4030016A82E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		22C1B59120C4A4030016A82E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		22C1B58E20C4A4030016A82E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		22C1B59320C4A4040016A82E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		22C1B59620C4A4040016A82E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		22C1B59820C4A4040016A82E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		22E1908020C6DD5900601014 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnapKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22E1908120C6DD5900601014 /* SnapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,8 +54,10 @@
 		22C1B58020C4A4020016A82E = {
 			isa = PBXGroup;
 			children = (
+				22E1908020C6DD5900601014 /* SnapKit.framework */,
 				22C1B58B20C4A4030016A82E /* What Now */,
 				22C1B58A20C4A4030016A82E /* Products */,
+				22E1907320C6D93500601014 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,13 +73,19 @@
 			isa = PBXGroup;
 			children = (
 				22C1B58C20C4A4030016A82E /* AppDelegate.swift */,
-				22C1B58E20C4A4030016A82E /* ViewController.swift */,
-				22C1B59020C4A4030016A82E /* Main.storyboard */,
+				22C1B58E20C4A4030016A82E /* MainViewController.swift */,
 				22C1B59320C4A4040016A82E /* Assets.xcassets */,
 				22C1B59520C4A4040016A82E /* LaunchScreen.storyboard */,
 				22C1B59820C4A4040016A82E /* Info.plist */,
 			);
 			path = "What Now";
+			sourceTree = "<group>";
+		};
+		22E1907320C6D93500601014 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,6 +98,7 @@
 				22C1B58520C4A4030016A82E /* Sources */,
 				22C1B58620C4A4030016A82E /* Frameworks */,
 				22C1B58720C4A4030016A82E /* Resources */,
+				22E1907F20C6DCC900601014 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -124,7 +149,6 @@
 			files = (
 				22C1B59720C4A4040016A82E /* LaunchScreen.storyboard in Resources */,
 				22C1B59420C4A4040016A82E /* Assets.xcassets in Resources */,
-				22C1B59220C4A4030016A82E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +159,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22C1B58F20C4A4030016A82E /* ViewController.swift in Sources */,
+				22C1B58F20C4A4030016A82E /* MainViewController.swift in Sources */,
 				22C1B58D20C4A4030016A82E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,14 +167,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		22C1B59020C4A4030016A82E /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				22C1B59120C4A4030016A82E /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		22C1B59520C4A4040016A82E /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -282,6 +298,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87WX2YQJP3;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/**",
+					"$(PROJECT_DIR)/What\\ Now/**",
+					"$(PROJECT_DIR)/What\\ Now",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "What Now/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -300,6 +323,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87WX2YQJP3;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/**",
+					"$(PROJECT_DIR)/What\\ Now/**",
+					"$(PROJECT_DIR)/What\\ Now",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "What Now/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
