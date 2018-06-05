@@ -1,0 +1,27 @@
+disabled_rules:
+  - statement_position
+  - cyclomatic_complexity
+  - function_parameter_count
+  - line_length
+  - type_name
+  - force_cast
+  - identifier_name
+
+included:
+  - What Now
+
+file_length:
+  warning: 400
+  error: 450
+
+function_body_length:
+  warning: 300
+  error: 400
+
+type_body_length:
+  warning: 300
+  error: 400
+
+identifier_name:
+  min_length:
+    warning: 2

@@ -35,7 +35,7 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.tasks?.count ?? 0;
+        return self.tasks?.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -76,7 +76,6 @@ class MainViewController: UITableViewController {
         scrollView.addSubview(newTaskView)
 
         scrollView.contentOffset = CGPoint(x: tableViewWidth, y: 0)
-
 
         return scrollView
     }
@@ -130,14 +129,14 @@ extension MainViewController: InputViewDelegate, NewTaskViewDelegate, CurrentTas
     }
 }
 
-class LengthIcon : UIView {
+class LengthIcon: UIView {
     var color: UIColor
     var length: NSNumber
-    let buttonSize: CGFloat = 50;
+    let buttonSize: CGFloat = 50
     init(color: UIColor, length: NSNumber) {
 
-        self.color = color;
-        self.length = length;
+        self.color = color
+        self.length = length
         super.init(frame: CGRect(x: 0, y: 0, width: self.buttonSize, height: self.buttonSize))
         self.backgroundColor = self.color
         self.layer.cornerRadius = self.buttonSize/2.0
@@ -155,7 +154,7 @@ protocol InputViewDelegate {
     func newTaskAction()
 }
 
-class InputView : UIView {
+class InputView: UIView {
 
     var delegate: InputViewDelegate?
 
@@ -182,7 +181,7 @@ class InputView : UIView {
         }
 
         let newTaskButton = UIButton(type: .contactAdd)
-        newTaskButton.addTarget(self, action:#selector(newTaskButtonAction) , for: .touchUpInside)
+        newTaskButton.addTarget(self, action: #selector(newTaskButtonAction), for: .touchUpInside)
         self.addSubview(newTaskButton)
 
         newTaskButton.snp.makeConstraints { (make) in
@@ -204,12 +203,12 @@ protocol NewTaskViewDelegate {
     func cancelNewTaskAction()
 }
 
-class NewTaskView : UIView {
+class NewTaskView: UIView {
     var delegate: NewTaskViewDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .orange;
+        self.backgroundColor = .orange
 
         let padding: CGFloat = 10
         let buttonSize: CGFloat = 50
@@ -223,9 +222,6 @@ class NewTaskView : UIView {
             make.centerX.equalTo(self)
             make.centerY.equalTo(self).offset(-60)
         }
-
-
-
 
         let taskLengthPicker = TaskLengthPicker(frame: CGRect.zero)
         self.addSubview(taskLengthPicker)
@@ -245,7 +241,7 @@ class NewTaskView : UIView {
 
         let cancelButton = UIButton(type: .contactAdd)
         cancelButton.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-        cancelButton.addTarget(self, action:#selector(cancelButtonAction) , for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelButtonAction), for: .touchUpInside)
         self.addSubview(cancelButton)
 
         cancelButton.snp.makeConstraints { (make) in
@@ -266,11 +262,11 @@ protocol CurrentTaskViewDelegate {
     func cancelCurrentTaskAction()
 }
 
-class CurrentTaskView : UIView {
+class CurrentTaskView: UIView {
     var delegate: CurrentTaskViewDelegate?
     init() {
         super.init(frame: .zero)
-        self.backgroundColor = .black;
+        self.backgroundColor = .black
         let padding: CGFloat = 10
         let buttonSize: CGFloat = 50
 
@@ -285,7 +281,7 @@ class CurrentTaskView : UIView {
 
         let cancelButton = UIButton(type: .contactAdd)
         cancelButton.frame = CGRect(x: frame.width - padding - buttonSize, y: padding, width: buttonSize, height: buttonSize)
-        cancelButton.addTarget(self, action:#selector(cancelButtonAction) , for: .touchUpInside)
+        cancelButton.addTarget(self, action:#selector(cancelButtonAction), for: .touchUpInside)
         self.addSubview(cancelButton)
     }
 
@@ -299,7 +295,7 @@ class CurrentTaskView : UIView {
 }
 
 protocol TaskLengthPickerDelegate {
-    func didPick(length:CGFloat)
+    func didPick(length: CGFloat)
 }
 
 class TaskLengthPicker: UIView {
@@ -362,4 +358,3 @@ struct Task {
     var name: String
     var length: NSNumber
 }
-

@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2236355A20C722730089F3BC /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2236355820C722730089F3BC /* SnapKit.framework */; };
+		2236355B20C722730089F3BC /* Snail.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2236355920C722730089F3BC /* Snail.framework */; };
 		22C1B58D20C4A4030016A82E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1B58C20C4A4030016A82E /* AppDelegate.swift */; };
 		22C1B58F20C4A4030016A82E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C1B58E20C4A4030016A82E /* MainViewController.swift */; };
 		22C1B59420C4A4040016A82E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22C1B59320C4A4040016A82E /* Assets.xcassets */; };
 		22C1B59720C4A4040016A82E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22C1B59520C4A4040016A82E /* LaunchScreen.storyboard */; };
-		22E1908120C6DD5900601014 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22E1908020C6DD5900601014 /* SnapKit.framework */; };
-		22E1908220C6DD5900601014 /* SnapKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22E1908020C6DD5900601014 /* SnapKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -22,7 +22,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				22E1908220C6DD5900601014 /* SnapKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -30,13 +29,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2236355820C722730089F3BC /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
+		2236355920C722730089F3BC /* Snail.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Snail.framework; path = Carthage/Build/iOS/Snail.framework; sourceTree = "<group>"; };
 		22C1B58920C4A4030016A82E /* What Now.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What Now.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C1B58C20C4A4030016A82E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22C1B58E20C4A4030016A82E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		22C1B59320C4A4040016A82E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		22C1B59620C4A4040016A82E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		22C1B59820C4A4040016A82E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		22E1908020C6DD5900601014 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SnapKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +44,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22E1908120C6DD5900601014 /* SnapKit.framework in Frameworks */,
+				2236355A20C722730089F3BC /* SnapKit.framework in Frameworks */,
+				2236355B20C722730089F3BC /* Snail.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,7 +55,6 @@
 		22C1B58020C4A4020016A82E = {
 			isa = PBXGroup;
 			children = (
-				22E1908020C6DD5900601014 /* SnapKit.framework */,
 				22C1B58B20C4A4030016A82E /* What Now */,
 				22C1B58A20C4A4030016A82E /* Products */,
 				22E1907320C6D93500601014 /* Frameworks */,
@@ -84,6 +84,8 @@
 		22E1907320C6D93500601014 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2236355920C722730089F3BC /* Snail.framework */,
+				2236355820C722730089F3BC /* SnapKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -95,10 +97,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C1B59B20C4A4040016A82E /* Build configuration list for PBXNativeTarget "What Now" */;
 			buildPhases = (
+				2236355D20C723CE0089F3BC /* SWIFT linting */,
 				22C1B58520C4A4030016A82E /* Sources */,
 				22C1B58620C4A4030016A82E /* Frameworks */,
 				22C1B58720C4A4030016A82E /* Resources */,
 				22E1907F20C6DCC900601014 /* Embed Frameworks */,
+				2236355C20C722C00089F3BC /* Carthage Something */,
 			);
 			buildRules = (
 			);
@@ -153,6 +157,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2236355C20C722C00089F3BC /* Carthage Something */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Snail.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SnapKit.framework",
+			);
+			name = "Carthage Something";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+		2236355D20C723CE0089F3BC /* SWIFT linting */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "SWIFT linting";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download fro  https://github.com/realm/SwiftLint\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		22C1B58520C4A4030016A82E /* Sources */ = {
@@ -304,6 +341,7 @@
 					"$(PROJECT_DIR)/What\\ Now/**",
 					"$(PROJECT_DIR)/What\\ Now",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "What Now/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -329,6 +367,7 @@
 					"$(PROJECT_DIR)/What\\ Now/**",
 					"$(PROJECT_DIR)/What\\ Now",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "What Now/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
