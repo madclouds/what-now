@@ -8,75 +8,302 @@
 
 import UIKit
 import SnapKit
+import Snail
+import Firebase
 
 struct Const {
     static let padding: CGFloat = 10
 }
 
+enum TaskLength: Codable {
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let title = try values.decode(Float.self, forKey: .length)
+        switch title {
+        case 5: self = .fiveMinute
+        case 15: self = .fifteenMinute
+        case 30: self = .thirtyMinute
+        case 60: self = .oneHour
+        case 180: self = .threeHour
+        case 300: self = .fiveHour
+        default: self = .fiveHour
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(title, forKey: .title)
+        try container.encode(length, forKey: .length)
+        try container.encode(subTitle, forKey: .subTitle)
+    }
+
+    case fiveMinute
+    case fifteenMinute
+    case thirtyMinute
+    case oneHour
+    case threeHour
+    case fiveHour
+
+    static let all: [TaskLength] = [.fiveMinute, .fifteenMinute, .thirtyMinute, .oneHour, .threeHour, .fiveHour]
+
+    var title: String {
+        switch self {
+        case .fiveMinute: return "5"
+        case .fifteenMinute: return "15"
+        case .thirtyMinute: return "30"
+        case .oneHour: return "1"
+        case .threeHour: return "3"
+        case .fiveHour: return "5"
+        }
+    }
+
+    var subTitle: String {
+        switch self {
+        case .fiveMinute: return "min"
+        case .fifteenMinute: return "min"
+        case .thirtyMinute: return "min"
+        case .oneHour: return "hr"
+        case .threeHour: return "hr"
+        case .fiveHour: return "hr"
+        }
+    }
+
+    var length: Float {
+        switch self {
+        case .fiveMinute: return 5
+        case .fifteenMinute: return 15
+        case .thirtyMinute: return 30
+        case .oneHour: return 60
+        case .threeHour: return 60*3
+        case .fiveHour: return 60*5
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case subTitle
+        case length
+    }
+}
+
 class MainViewController: UITableViewController {
 
+    private let viewModel: MainViewModel
+    private let databaseService: DatabaseService
+
     var task: Task?
-    var tasks: [Task]?
     var scrollView: UIScrollView?
+    let currentTask = CurrentTaskView()
+    let pickTaskView = InputView()
+    let newTaskView = NewTaskView()
+    init(databaseService: DatabaseService, viewModel: MainViewModel) {
+        self.viewModel = viewModel
+        self.databaseService = databaseService
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .lightGray
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        self.tasks = [Task(name: "First Task", length: 5),
-                        Task(name: "Second Task", length: 5),
-                        Task(name: "Third Task", length: 5)]
-        self.tableView.tableFooterView = UIView()
+        view.backgroundColor = .lightGray
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.tableFooterView = UIView()
+        let db = Firestore.firestore()
+        db.collection("tasks").addSnapshotListener { (_, error) in
+            guard error == nil else {
+                return
+            }
+            self.tableView.reloadData()
+        }
+//        let db = Firestore.firestore()
+
+//        var ref: DocumentReference? = nil
+//        ref = db.collection("users").addDocument(data: [
+//            "first": "Ada",
+//            "last": "Lovelace",
+//            "born": 1815
+//        ]) { err in
+//            if let err = err {
+//                print("Error adding document: \(err)")
+//            } else {
+//                print("Document added with ID: \(ref!.documentID)")
+//            }
+//        }
+//
+//        ref = db.collection("users").addDocument(data: [
+//            "first": "Alan",
+//            "middle": "Mathison",
+//            "last": "Turing",
+//            "born": 1912
+//        ]) { err in
+//            if let err = err {
+//                print("Error adding document: \(err)")
+//            } else {
+//                print("Document added with ID: \(ref!.documentID)")
+//            }
+//        }
     }
 
     let headerHeight: CGFloat = 200
 
     var tableViewWidth: CGFloat {
-        return self.tableView.bounds.width
+        return tableView.bounds.width
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.tasks?.count ?? 0
+        return viewModel.numberOfTasks
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        guard let task = self.tasks?[indexPath.row] else {
-            return cell
-        }
-
-        cell.textLabel?.text = task.name
-        let padding: CGFloat = 10
-        let icon = LengthIcon(color: .red, length: 5)
-        icon.frame = CGRect(x: tableView.frame.width - icon.frame.width - padding, y: padding, width: icon.frame.width, height: icon.frame.height)
+         let task = viewModel.task(indexPath: indexPath)
+        cell.textLabel?.text = task.title
+        let icon = TaskLengthButton(taskLength: task.length)
         cell.contentView.addSubview(icon)
+        icon.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.right.equalToSuperview().inset(10)
+        }
         return cell
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
         let tableViewWidth = tableView.bounds.width
-        self.scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: tableViewWidth, height: self.headerHeight))
-        guard let scrollView = self.scrollView else {
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: tableViewWidth, height: headerHeight))
+        guard let scrollView = scrollView else {
             return nil
         }
-        scrollView.contentSize = CGSize(width: tableViewWidth * 3, height: self.headerHeight)
+
+        let contentView = UIView()
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+            make.width.equalTo(tableViewWidth*3)
+        }
         scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
 
-        let currentTask = CurrentTaskView()
-        currentTask.delegate = self
-        scrollView.addSubview(currentTask)
+        contentView.addSubview(currentTask)
+        currentTask.snp.makeConstraints { (make) in
+            make.width.equalTo(tableViewWidth)
+            make.height.equalTo(headerHeight)
+            make.top.bottom.left.equalToSuperview()
+        }
+        currentTask.cancelButton.tap.subscribe(onNext: { [weak self] in
+            self?.goToInput()
+        })
+        currentTask.doneButton.tap.subscribe(onNext: { [weak self] in
+            self?.doneCurrentTask()
+        })
 
-        let inputView = InputView(frame: CGRect(x: tableViewWidth, y: 0, width: tableViewWidth, height: self.headerHeight))
-        inputView.delegate = self
-        scrollView.addSubview(inputView)
+        contentView.addSubview(pickTaskView)
+        pickTaskView.newTaskButton.tap.subscribe(onNext: { [weak self] in
+            self?.goToNewTask()
+            self?.tableView.reloadData()
+        })
 
-        let newTaskView = NewTaskView(frame: CGRect(x: tableViewWidth*2, y: 0, width: tableViewWidth, height: self.headerHeight))
-        newTaskView.delegate = self
-        scrollView.addSubview(newTaskView)
+        pickTaskView.snp.makeConstraints { (make) in
+            make.width.equalTo(tableViewWidth)
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(currentTask.snp.right)
+        }
 
+        pickTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.pickTaskView.taskLengthPicker.fiveMinuteButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        pickTaskView.taskLengthPicker.fifteenMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.pickTaskView.taskLengthPicker.fifteenMinuteButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        pickTaskView.taskLengthPicker.thirtyMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.pickTaskView.taskLengthPicker.thirtyMinuteButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        pickTaskView.taskLengthPicker.oneHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.pickTaskView.taskLengthPicker.oneHourButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        pickTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.pickTaskView.taskLengthPicker.threeHourButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        pickTaskView.taskLengthPicker.fiveHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.pickTaskView.taskLengthPicker.fiveHourButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+
+        contentView.addSubview(newTaskView)
+        newTaskView.snp.makeConstraints { (make) in
+            make.width.equalTo(tableViewWidth)
+            make.top.bottom.equalToSuperview()
+            make.left.equalTo(pickTaskView.snp.right)
+        }
+        newTaskView.cancelButton.tap.subscribe(onNext: { [weak self] in
+            self?.goToInput()
+        })
+
+        newTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.newTaskView.taskLengthPicker.fiveMinuteButton.length else {
+                return
+            }
+            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
+            self?.newTaskView.input.text = ""
+        })
+        newTaskView.taskLengthPicker.fifteenMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.newTaskView.taskLengthPicker.fifteenMinuteButton.length else {
+                return
+            }
+            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
+            self?.newTaskView.input.text = ""
+        })
+        newTaskView.taskLengthPicker.thirtyMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.newTaskView.taskLengthPicker.thirtyMinuteButton.length else {
+                return
+            }
+            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
+            self?.newTaskView.input.text = ""
+        })
+        newTaskView.taskLengthPicker.oneHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.newTaskView.taskLengthPicker.oneHourButton.length else {
+                return
+            }
+            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
+            self?.newTaskView.input.text = ""
+        })
+        newTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.newTaskView.taskLengthPicker.threeHourButton.length else {
+                return
+            }
+            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
+            self?.newTaskView.input.text = ""
+        })
+        newTaskView.taskLengthPicker.fiveHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.newTaskView.taskLengthPicker.fiveHourButton.length else {
+                return
+            }
+            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
+            self?.newTaskView.input.text = ""
+        })
+
+        scrollView.needsUpdateConstraints()
+        scrollView.layoutIfNeeded()
         scrollView.contentOffset = CGPoint(x: tableViewWidth, y: 0)
-
         return scrollView
     }
 
@@ -85,7 +312,7 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return self.headerHeight
+        return headerHeight
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -94,267 +321,64 @@ class MainViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if let task = self.tasks?[indexPath.row] {
-            self.didSelect(task: task)
-        }
-    }
-
-    func didSelect(task: Task) {
-        self.task = task
-        self.goToCurrentTask()
+        let task = viewModel.task(indexPath: indexPath)
+        pick(task: task)
     }
 
     func goToInput() {
-        self.scrollView?.scrollRectToVisible(CGRect(x: self.tableViewWidth, y: 0, width: self.tableViewWidth, height: self.headerHeight), animated: true)
+        scrollView?.scrollRectToVisible(CGRect(x: tableViewWidth, y: 0, width: tableViewWidth, height: headerHeight), animated: true)
     }
 
     func goToNewTask() {
-        self.scrollView?.scrollRectToVisible(CGRect(x: self.tableViewWidth*2, y: 0, width: self.tableViewWidth, height: self.headerHeight), animated: true)
+        scrollView?.scrollRectToVisible(CGRect(x: tableViewWidth*2, y: 0, width: tableViewWidth, height: headerHeight), animated: true)
     }
 
     func goToCurrentTask() {
-        self.scrollView?.scrollRectToVisible(CGRect(x: 0, y: 0, width: self.tableViewWidth, height: self.headerHeight), animated: true)
+        scrollView?.scrollRectToVisible(CGRect(x: 0, y: 0, width: tableViewWidth, height: headerHeight), animated: true)
     }
 }
 
-extension MainViewController: InputViewDelegate, NewTaskViewDelegate, CurrentTaskViewDelegate {
-    func newTaskAction() {
-        self.goToNewTask()
+extension MainViewController {
+    func pick(task: Task) {
+        self.task = task
+        currentTask.task = task
+        goToCurrentTask()
     }
-    func cancelNewTaskAction() {
-        self.goToInput()
-    }
-    func cancelCurrentTaskAction() {
-        self.goToInput()
-    }
-}
-
-class LengthIcon: UIView {
-    var color: UIColor
-    var length: NSNumber
-    let buttonSize: CGFloat = 50
-    init(color: UIColor, length: NSNumber) {
-
-        self.color = color
-        self.length = length
-        super.init(frame: CGRect(x: 0, y: 0, width: self.buttonSize, height: self.buttonSize))
-        self.backgroundColor = self.color
-        self.layer.cornerRadius = self.buttonSize/2.0
-        self.clipsToBounds = true
-
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-}
-
-protocol InputViewDelegate {
-    func newTaskAction()
-}
-
-class InputView: UIView {
-
-    var delegate: InputViewDelegate?
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = .red
-
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Pick Task"
-        label.textColor = .white
-        self.addSubview(label)
-        label.snp.makeConstraints { (make) in
-            make.centerX.equalTo(self)
-            make.centerY.equalTo(self).offset(-60)
+    func pickTask(length: TaskLength) {
+        guard let task = viewModel.pickTask(withLength: length) else {
+            //no task at that length
+            return
         }
-
-        let taskLengthPicker = TaskLengthPicker(frame: CGRect.zero)
-        self.addSubview(taskLengthPicker)
-        taskLengthPicker.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-Const.padding)
-            make.height.equalTo(50)
-        }
-
-        let newTaskButton = UIButton(type: .contactAdd)
-        newTaskButton.addTarget(self, action: #selector(newTaskButtonAction), for: .touchUpInside)
-        self.addSubview(newTaskButton)
-
-        newTaskButton.snp.makeConstraints { (make) in
-            make.top.equalTo(self).offset(Const.padding)
-            make.right.equalTo(self).offset(-Const.padding)
-        }
+        pick(task: task)
     }
 
-    @objc func newTaskButtonAction() {
-        self.delegate?.newTaskAction()
+    func newTask(title: String, length: TaskLength) {
+        guard title.count > 0 else {
+            return
+        }
+        databaseService.save(title: title, length: length)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func cancelCurrentTask() {
+        task = nil
+        currentTask.task = nil
+        goToInput()
+    }
+
+    func doneCurrentTask() {
+        guard let task = task else {
+            return
+        }
+        databaseService.delete(task: task)
+        self.task = nil
+        goToInput()
     }
 }
 
-protocol NewTaskViewDelegate {
-    func cancelNewTaskAction()
-}
+struct Task: Codable {
 
-class NewTaskView: UIView {
-    var delegate: NewTaskViewDelegate?
+    var title: String
+    var id: String
+    var length: TaskLength
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = .orange
-
-        let padding: CGFloat = 10
-        let buttonSize: CGFloat = 50
-
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Create Task"
-        label.textColor = .white
-        self.addSubview(label)
-        label.snp.makeConstraints { (make) in
-            make.centerX.equalTo(self)
-            make.centerY.equalTo(self).offset(-60)
-        }
-
-        let taskLengthPicker = TaskLengthPicker(frame: CGRect.zero)
-        self.addSubview(taskLengthPicker)
-        taskLengthPicker.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(Const.padding)
-            make.height.equalTo(50)
-        }
-        let input = UITextField(frame: CGRect.zero)
-        input.backgroundColor = .white
-        self.addSubview(input)
-        input.snp.makeConstraints { (make) in
-            make.right.left.equalTo(taskLengthPicker)
-            make.height.equalTo(50)
-            make.bottom.equalTo(taskLengthPicker.snp.top).inset(Const.padding)
-        }
-
-        let cancelButton = UIButton(type: .contactAdd)
-        cancelButton.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-        cancelButton.addTarget(self, action: #selector(cancelButtonAction), for: .touchUpInside)
-        self.addSubview(cancelButton)
-
-        cancelButton.snp.makeConstraints { (make) in
-            make.top.equalTo(self).offset(padding)
-            make.left.equalTo(self).offset(padding)
-        }
-    }
-
-    @objc func cancelButtonAction() {
-        self.delegate?.cancelNewTaskAction()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-protocol CurrentTaskViewDelegate {
-    func cancelCurrentTaskAction()
-}
-
-class CurrentTaskView: UIView {
-    var delegate: CurrentTaskViewDelegate?
-    init() {
-        super.init(frame: .zero)
-        self.backgroundColor = .black
-        let padding: CGFloat = 10
-        let buttonSize: CGFloat = 50
-
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Current Task"
-        label.textColor = .white
-        self.addSubview(label)
-        label.snp.makeConstraints { (make) in
-            make.center.equalTo(self)
-        }
-
-        let cancelButton = UIButton(type: .contactAdd)
-        cancelButton.frame = CGRect(x: frame.width - padding - buttonSize, y: padding, width: buttonSize, height: buttonSize)
-        cancelButton.addTarget(self, action:#selector(cancelButtonAction), for: .touchUpInside)
-        self.addSubview(cancelButton)
-    }
-
-    @objc func cancelButtonAction() {
-        self.delegate?.cancelCurrentTaskAction()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-protocol TaskLengthPickerDelegate {
-    func didPick(length: CGFloat)
-}
-
-class TaskLengthPicker: UIView {
-    var delegate: TaskLengthPickerDelegate?
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        let contentView = UIStackView(frame: CGRect.zero)
-        contentView.axis = .horizontal
-        contentView.spacing = 5
-        contentView.distribution = .fillEqually
-        self.addSubview(contentView)
-        contentView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
-        }
-        let width = 50
-
-        let b1 = TaskLengthButton(frame: CGRect(x: 0, y: 0, width: width, height: width))
-        contentView.addArrangedSubview(b1)
-
-        let b2 = TaskLengthButton(frame: CGRect(x: 0, y: 0, width: width, height: width))
-        contentView.addArrangedSubview(b2)
-
-        let b3 = TaskLengthButton(frame: CGRect(x: 0, y: 0, width: width, height: width))
-        contentView.addArrangedSubview(b3)
-
-        let b4 = TaskLengthButton(frame: CGRect(x: 0, y: 0, width: width, height: width))
-        contentView.addArrangedSubview(b4)
-
-        let b5 = TaskLengthButton(frame: CGRect(x: 0, y: 0, width: width, height: width))
-        contentView.addArrangedSubview(b5)
-
-        let b6 = TaskLengthButton(frame: CGRect(x: 0, y: 0, width: width, height: width))
-        contentView.addArrangedSubview(b6)
-    }
-
-    override var intrinsicContentSize: CGSize {
-        return CGSize(width: 50 * 6 + 5 * 5, height: 50)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class TaskLengthButton: UIView {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.clipsToBounds = true
-        self.layer.cornerRadius = frame.height/2.0
-        self.backgroundColor = .blue
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-struct Task {
-    var name: String
-    var length: NSNumber
 }
