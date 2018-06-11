@@ -1,0 +1,35 @@
+# the build
+build
+
+# temp nibs and swap files
+*~.nib
+*.swp
+
+Carthage/Checkouts/
+Carthage/Build/Mac/
+Carthage/Build/watchOS/
+Carthage/Build/tvOS/
+*.bcsymbolmap
+
+# OS X folder attributes
+.DS_Store
+*.orig
+
+# user-specific XCode stuff
+*.mode1v3
+*.mode2v3
+*.pbxuser
+*.perspectivev3
+
+*.junk
+*.delete
+*.tmp
+
+tmp
+
+xcuserdata/
+*.xcuserdatad
+
+Documentation
+
+remote-logging-infrastructure/processing-lambda/node_modules/
