@@ -50,6 +50,12 @@ class MainViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.tableFooterView = UIView()
         setupInput()
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -129,6 +135,9 @@ extension MainViewController {
             self?.cardContainer.goToNewTask()
             self?.tableView.reloadData()
         })
+
+        //Todo: I want to enable & disable the taskLengthPicker buttons based on if my data source has tasks with that lengh.
+        //For example, if there is a 5 minute task, the 5 minute button should be enabled.  Otherwise disable it
         cardContainer.pickTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
             guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.fiveMinuteButton.length else {
                 return
@@ -220,6 +229,7 @@ extension MainViewController {
         guard title.count > 0 else {
             return
         }
+        view.endEditing(true)
         databaseService.save(title: title, length: length)
     }
 
