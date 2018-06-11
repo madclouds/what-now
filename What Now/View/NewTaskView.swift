@@ -14,26 +14,24 @@ class NewTaskView: UIView {
     let taskLengthPicker = TaskLengthPicker(frame: CGRect.zero)
     init() {
         super.init(frame: .zero)
-        backgroundColor = UIColor(rgb: 0x34F355)
-
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "New Task View"
-        label.textColor = .white
-        addSubview(label)
-        label.snp.makeConstraints { (make) in
-            make.centerX.equalTo(self)
-            make.centerY.equalTo(self).offset(-60)
+        let containerView = UIView()
+        addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(22)
         }
+        containerView.clipsToBounds = true
+        containerView.layer.cornerRadius = 8
+        containerView.backgroundColor = UIColor(rgb: 0x34F355)
 
-        addSubview(taskLengthPicker)
+        containerView.addSubview(taskLengthPicker)
         taskLengthPicker.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(Const.padding)
             make.height.equalTo(50)
         }
         input.backgroundColor = .white
-        addSubview(input)
+        containerView.addSubview(input)
         input.textAlignment = .center
         input.snp.makeConstraints { (make) in
             make.right.left.equalTo(taskLengthPicker)
@@ -43,9 +41,19 @@ class NewTaskView: UIView {
         input.layer.cornerRadius = 50/2
         input.clipsToBounds = true
 
-        addSubview(cancelButton)
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "New task name:"
+        label.textColor = .white
+        containerView.addSubview(label)
+        label.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(input.snp.top).offset(-10)
+        }
+
+        containerView.addSubview(cancelButton)
         cancelButton.snp.makeConstraints { (make) in
-            make.top.left.equalTo(self).offset(Const.padding)
+            make.top.left.equalToSuperview().offset(Const.padding)
         }
     }
 

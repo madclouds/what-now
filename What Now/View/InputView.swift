@@ -14,9 +14,18 @@ class InputView: UIView {
     let taskLengthPicker = TaskLengthPicker(frame: CGRect.zero)
     init() {
         super.init(frame: .zero)
-        backgroundColor = UIColor(rgb: 0xFF1B1B)
 
-        addSubview(taskLengthPicker)
+        let containerView = UIView()
+        addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(22)
+        }
+        containerView.clipsToBounds = true
+        containerView.layer.cornerRadius = 8
+        containerView.backgroundColor = UIColor(rgb: 0xFF1B1B)
+
+        containerView.addSubview(taskLengthPicker)
         taskLengthPicker.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(Const.padding)
@@ -26,16 +35,16 @@ class InputView: UIView {
         let label = UILabel()
         label.text = "Pick Task"
         label.textColor = .white
-        addSubview(label)
+        containerView.addSubview(label)
         label.snp.makeConstraints { make in
             make.centerX.equalTo(self)
             make.top.equalTo(self)
             make.bottom.equalTo(taskLengthPicker.snp.top)
         }
 
-        addSubview(newTaskButton)
+        containerView.addSubview(newTaskButton)
         newTaskButton.snp.makeConstraints { make in
-            make.top.right.equalTo(self).inset(Const.padding)
+            make.top.right.equalToSuperview().inset(Const.padding)
         }
     }
 

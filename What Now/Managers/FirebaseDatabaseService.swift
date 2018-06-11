@@ -7,25 +7,32 @@
 //
 
 import Firebase
+import Snail
 
 class FirebaseDatabaseService: DatabaseService {
+    var observable: Observable<Void>
     let db = Firestore.firestore()
     var tasksFromServer: [Task] = []
     init() {
+        self.observable = Observable<Void>()
         let db = Firestore.firestore()
-        db.collection("tasks").addSnapshotListener { (querySnapshot, error) in
-            guard error == nil else {
-                return
-            }
-            self.tasksFromServer = []
-            for document in querySnapshot!.documents {
-                var data = document.data()
-                data["id"] = document.documentID
-                let json = try? JSONSerialization.data(withJSONObject: data)
-                if let newTask = try? JSONDecoder().decode(Task.self, from: json!) {
-                    self.tasksFromServer.append(newTask)
+        if let user = Auth.auth().currentUser {
+            db.collection("tasks").document(user.uid).collection("tasks").addSnapshotListener { (querySnapshot, error) in
+                guard error == nil else {
+                    return
                 }
+                self.tasksFromServer = []
+                for document in querySnapshot!.documents {
+                    var data = document.data()
+                    data["id"] = document.documentID
+                    let json = try? JSONSerialization.data(withJSONObject: data)
+                    if let newTask = try? JSONDecoder().decode(Task.self, from: json!) {
+                        self.tasksFromServer.append(newTask)
+                    }
+                }
+                self.observable.on(.next(()))
             }
+
         }
     }
     func save(title: String, length: TaskLength) {
@@ -35,9 +42,11 @@ class FirebaseDatabaseService: DatabaseService {
                         "title": length.title,
                         "subTitle": length.subTitle]]
 
-        db.collection("tasks").addDocument(data: dict) { err in
-            if let err = err {
-                print("Error adding document: \(err)")
+        if let user = Auth.auth().currentUser {
+            db.collection("tasks").document(user.uid).collection("tasks").addDocument(data: dict) { err in
+                if let err = err {
+                    print("Error adding document: \(err)")
+                }
             }
         }
     }
@@ -47,7 +56,9 @@ class FirebaseDatabaseService: DatabaseService {
     }
 
     func delete(task: Task) {
-        db.collection("tasks").document(task.id).delete()
+        if let user = Auth.auth().currentUser {
+            db.collection("tasks").document(user.uid).collection("tasks").document(task.id).delete()
+        }
     }
 
     func getTasks() -> [Task] {

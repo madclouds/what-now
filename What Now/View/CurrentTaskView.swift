@@ -19,20 +19,28 @@ class CurrentTaskView: UIView {
     }
     init() {
         super.init(frame: .zero)
-        backgroundColor = UIColor(rgb: 0x087EFF)
+        let containerView = UIView()
+        addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(22)
+        }
+        containerView.clipsToBounds = true
+        containerView.layer.cornerRadius = 8
+        containerView.backgroundColor = UIColor(rgb: 0x087EFF)
 
         label.text = "Current Task"
         label.textColor = .white
-        addSubview(label)
+        containerView.addSubview(label)
         label.snp.makeConstraints { (make) in
-            make.center.equalTo(self)
+            make.center.equalToSuperview()
         }
-        addSubview(cancelButton)
+        containerView.addSubview(cancelButton)
         cancelButton.snp.makeConstraints { make in
-                make.top.right.equalTo(self).inset(Const.padding)
+                make.top.right.equalToSuperview().inset(Const.padding)
         }
 
-        addSubview(doneButton)
+        containerView.addSubview(doneButton)
         doneButton.setTitle("Done", for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.backgroundColor = .green

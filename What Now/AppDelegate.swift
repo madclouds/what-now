@@ -18,6 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FirebaseApp.configure()
 
+        Auth.auth().signInAnonymously { (authResult, _) in
+            if let user = authResult?.user {
+//                let isAnonymous = user.isAnonymous  // true
+                let uid = user.uid
+                print("============================= "+uid)
+            }
+        }
+
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = MainFactory().createMainModelView()
         window.makeKeyAndVisible()

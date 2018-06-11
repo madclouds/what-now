@@ -17,6 +17,7 @@
 		2210C02220C9C56100D7C753 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02120C9C56100D7C753 /* UIColor.swift */; };
 		2210C02520C9ED5300D7C753 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02420C9ED5300D7C753 /* DatabaseService.swift */; };
 		2210C02720C9EE2A00D7C753 /* FirebaseDatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02620C9EE2A00D7C753 /* FirebaseDatabaseService.swift */; };
+		2210C02920CAEEA600D7C753 /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02820CAEEA600D7C753 /* CardContainer.swift */; };
 		2236355A20C722730089F3BC /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2236355820C722730089F3BC /* SnapKit.framework */; };
 		2236355B20C722730089F3BC /* Snail.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2236355920C722730089F3BC /* Snail.framework */; };
 		227D8F6320C98B4E00985946 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 227D8F6220C98B4E00985946 /* GoogleService-Info.plist */; };
@@ -51,6 +52,7 @@
 		2210C02120C9C56100D7C753 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		2210C02420C9ED5300D7C753 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		2210C02620C9EE2A00D7C753 /* FirebaseDatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDatabaseService.swift; sourceTree = "<group>"; };
+		2210C02820CAEEA600D7C753 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		2236355820C722730089F3BC /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		2236355920C722730089F3BC /* Snail.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Snail.framework; path = Carthage/Build/iOS/Snail.framework; sourceTree = "<group>"; };
 		227D8F6220C98B4E00985946 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				220810F120C7661D008E5B83 /* CurrentTaskView.swift */,
 				220810F320C76657008E5B83 /* TaskLenghView.swift */,
 				220810F720C768F1008E5B83 /* TaskLengthPickerView.swift */,
+				2210C02820CAEEA600D7C753 /* CardContainer.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-What Now/Pods-What Now-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BoringSSL/openssl.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/gRPC/GRPCClient.framework",
@@ -335,6 +339,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRPCClient.framework",
@@ -358,6 +363,7 @@
 			files = (
 				22C1B58F20C4A4030016A82E /* MainViewController.swift in Sources */,
 				220810F820C768F1008E5B83 /* TaskLengthPickerView.swift in Sources */,
+				2210C02920CAEEA600D7C753 /* CardContainer.swift in Sources */,
 				220810F220C7661D008E5B83 /* CurrentTaskView.swift in Sources */,
 				2210C02720C9EE2A00D7C753 /* FirebaseDatabaseService.swift in Sources */,
 				220810F420C76657008E5B83 /* TaskLenghView.swift in Sources */,

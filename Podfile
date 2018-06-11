@@ -8,5 +8,6 @@ target 'What Now' do
   # Pods for What Now
   pod 'Firebase/Core'
   pod 'Firebase/Firestore'
+  pod 'Firebase/Auth'
 
 end

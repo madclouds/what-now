@@ -11,6 +11,242 @@ import SnapKit
 import Snail
 import Firebase
 
+class MainViewController: UIViewController {
+
+    private let viewModel: MainViewModel
+    private let databaseService: DatabaseService
+
+    var task: Task?
+    let tableView = UITableView()
+    internal let cardContainer = CardContainer()
+    init(databaseService: DatabaseService, viewModel: MainViewModel) {
+        self.viewModel = viewModel
+        self.databaseService = databaseService
+        super.init(nibName: nil, bundle: nil)
+        databaseService.observable.subscribe(onNext: { [weak self] in self?.tableView.reloadData() })
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
+
+        view.addSubview(cardContainer)
+        cardContainer.snp.makeConstraints { (make) in
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(headerHeight)
+        }
+
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalToSuperview()
+            make.top.equalTo(cardContainer.snp.bottom)
+        }
+        view.backgroundColor = .lightGray
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.tableFooterView = UIView()
+        setupInput()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        goTo()
+    }
+
+    let headerHeight: CGFloat = 200
+
+    var tableViewWidth: CGFloat {
+        return tableView.bounds.width
+    }
+    func goTo() {
+        if viewModel.tasks.count > 0 {
+            cardContainer.goToInput()
+        } else {
+            cardContainer.goToNewTask()
+        }
+    }
+}
+
+extension MainViewController {
+    func setupInput() {
+        cardContainer.newTaskView.cancelButton.tap.subscribe(onNext: { [weak self] in
+            self?.cardContainer.goToInput()
+        })
+        //Todo: this doesn't feel right.  I would think there's a better way to subscribe here
+        cardContainer.newTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.fiveMinuteButton.length else {
+                return
+            }
+            self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
+            self?.cardContainer.newTaskView.input.text = ""
+        })
+        cardContainer.newTaskView.taskLengthPicker.fifteenMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.fifteenMinuteButton.length else {
+                return
+            }
+            self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
+            self?.cardContainer.newTaskView.input.text = ""
+        })
+        cardContainer.newTaskView.taskLengthPicker.thirtyMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.thirtyMinuteButton.length else {
+                return
+            }
+            self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
+            self?.cardContainer.newTaskView.input.text = ""
+        })
+        cardContainer.newTaskView.taskLengthPicker.oneHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.oneHourButton.length else {
+                return
+            }
+            self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
+            self?.cardContainer.newTaskView.input.text = ""
+        })
+        cardContainer.newTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.threeHourButton.length else {
+                return
+            }
+            self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
+            self?.cardContainer.newTaskView.input.text = ""
+        })
+        cardContainer.newTaskView.taskLengthPicker.fiveHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.fiveHourButton.length else {
+                return
+            }
+            self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
+            self?.cardContainer.newTaskView.input.text = ""
+        })
+
+        cardContainer.currentTask.cancelButton.tap.subscribe(onNext: { [weak self] in
+            self?.cardContainer.goToInput()
+        })
+        cardContainer.currentTask.doneButton.tap.subscribe(onNext: { [weak self] in
+            self?.doneCurrentTask()
+        })
+        cardContainer.pickTaskView.newTaskButton.tap.subscribe(onNext: { [weak self] in
+            self?.cardContainer.goToNewTask()
+            self?.tableView.reloadData()
+        })
+        cardContainer.pickTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.fiveMinuteButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        cardContainer.pickTaskView.taskLengthPicker.fifteenMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.fifteenMinuteButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        cardContainer.pickTaskView.taskLengthPicker.thirtyMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.thirtyMinuteButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        cardContainer.pickTaskView.taskLengthPicker.oneHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.oneHourButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        cardContainer.pickTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.threeHourButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+        cardContainer.pickTaskView.taskLengthPicker.fiveHourButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.fiveHourButton.length else {
+                return
+            }
+            self?.pickTask(length: length)
+        })
+    }
+}
+
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.numberOfTasks
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let task = viewModel.task(indexPath: indexPath)
+        cell.textLabel?.text = task.title
+        let icon = TaskLengthButton(taskLength: task.length)
+        cell.contentView.addSubview(icon)
+        icon.snp.makeConstraints { (make) in
+            make.centerY.equalToSuperview()
+            make.right.equalToSuperview().inset(10)
+        }
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50 + 10 + 10
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let task = viewModel.task(indexPath: indexPath)
+        pick(task: task)
+    }
+}
+
+extension MainViewController {
+    func pick(task: Task) {
+        self.task = task
+        cardContainer.currentTask.task = task
+        cardContainer.goToCurrentTask()
+    }
+    func pickTask(length: TaskLength) {
+        guard let task = viewModel.pickTask(withLength: length) else {
+            //no task at that length
+            return
+        }
+        pick(task: task)
+    }
+
+    func newTask(title: String, length: TaskLength) {
+        guard title.count > 0 else {
+            return
+        }
+        databaseService.save(title: title, length: length)
+    }
+
+    func cancelCurrentTask() {
+        task = nil
+        cardContainer.currentTask.task = nil
+        cardContainer.goToInput()
+    }
+
+    func doneCurrentTask() {
+        guard let task = task else {
+            return
+        }
+        databaseService.delete(task: task)
+        self.task = nil
+        goTo()
+    }
+}
+
+struct Task: Codable {
+
+    var title: String
+    var id: String
+    var length: TaskLength
+
+}
+
 struct Const {
     static let padding: CGFloat = 10
 }
@@ -84,301 +320,4 @@ enum TaskLength: Codable {
         case subTitle
         case length
     }
-}
-
-class MainViewController: UITableViewController {
-
-    private let viewModel: MainViewModel
-    private let databaseService: DatabaseService
-
-    var task: Task?
-    var scrollView: UIScrollView?
-    let currentTask = CurrentTaskView()
-    let pickTaskView = InputView()
-    let newTaskView = NewTaskView()
-    init(databaseService: DatabaseService, viewModel: MainViewModel) {
-        self.viewModel = viewModel
-        self.databaseService = databaseService
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .lightGray
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.tableFooterView = UIView()
-        let db = Firestore.firestore()
-        db.collection("tasks").addSnapshotListener { (_, error) in
-            guard error == nil else {
-                return
-            }
-            self.tableView.reloadData()
-        }
-//        let db = Firestore.firestore()
-
-//        var ref: DocumentReference? = nil
-//        ref = db.collection("users").addDocument(data: [
-//            "first": "Ada",
-//            "last": "Lovelace",
-//            "born": 1815
-//        ]) { err in
-//            if let err = err {
-//                print("Error adding document: \(err)")
-//            } else {
-//                print("Document added with ID: \(ref!.documentID)")
-//            }
-//        }
-//
-//        ref = db.collection("users").addDocument(data: [
-//            "first": "Alan",
-//            "middle": "Mathison",
-//            "last": "Turing",
-//            "born": 1912
-//        ]) { err in
-//            if let err = err {
-//                print("Error adding document: \(err)")
-//            } else {
-//                print("Document added with ID: \(ref!.documentID)")
-//            }
-//        }
-    }
-
-    let headerHeight: CGFloat = 200
-
-    var tableViewWidth: CGFloat {
-        return tableView.bounds.width
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfTasks
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-         let task = viewModel.task(indexPath: indexPath)
-        cell.textLabel?.text = task.title
-        let icon = TaskLengthButton(taskLength: task.length)
-        cell.contentView.addSubview(icon)
-        icon.snp.makeConstraints { (make) in
-            make.centerY.equalToSuperview()
-            make.right.equalToSuperview().inset(10)
-        }
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let tableViewWidth = tableView.bounds.width
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: tableViewWidth, height: headerHeight))
-        guard let scrollView = scrollView else {
-            return nil
-        }
-
-        let contentView = UIView()
-        scrollView.addSubview(contentView)
-        contentView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
-            make.width.equalTo(tableViewWidth*3)
-        }
-        scrollView.isPagingEnabled = true
-        scrollView.showsHorizontalScrollIndicator = false
-
-        contentView.addSubview(currentTask)
-        currentTask.snp.makeConstraints { (make) in
-            make.width.equalTo(tableViewWidth)
-            make.height.equalTo(headerHeight)
-            make.top.bottom.left.equalToSuperview()
-        }
-        currentTask.cancelButton.tap.subscribe(onNext: { [weak self] in
-            self?.goToInput()
-        })
-        currentTask.doneButton.tap.subscribe(onNext: { [weak self] in
-            self?.doneCurrentTask()
-        })
-
-        contentView.addSubview(pickTaskView)
-        pickTaskView.newTaskButton.tap.subscribe(onNext: { [weak self] in
-            self?.goToNewTask()
-            self?.tableView.reloadData()
-        })
-
-        pickTaskView.snp.makeConstraints { (make) in
-            make.width.equalTo(tableViewWidth)
-            make.top.bottom.equalToSuperview()
-            make.left.equalTo(currentTask.snp.right)
-        }
-
-        pickTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.pickTaskView.taskLengthPicker.fiveMinuteButton.length else {
-                return
-            }
-            self?.pickTask(length: length)
-        })
-        pickTaskView.taskLengthPicker.fifteenMinuteButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.pickTaskView.taskLengthPicker.fifteenMinuteButton.length else {
-                return
-            }
-            self?.pickTask(length: length)
-        })
-        pickTaskView.taskLengthPicker.thirtyMinuteButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.pickTaskView.taskLengthPicker.thirtyMinuteButton.length else {
-                return
-            }
-            self?.pickTask(length: length)
-        })
-        pickTaskView.taskLengthPicker.oneHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.pickTaskView.taskLengthPicker.oneHourButton.length else {
-                return
-            }
-            self?.pickTask(length: length)
-        })
-        pickTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.pickTaskView.taskLengthPicker.threeHourButton.length else {
-                return
-            }
-            self?.pickTask(length: length)
-        })
-        pickTaskView.taskLengthPicker.fiveHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.pickTaskView.taskLengthPicker.fiveHourButton.length else {
-                return
-            }
-            self?.pickTask(length: length)
-        })
-
-        contentView.addSubview(newTaskView)
-        newTaskView.snp.makeConstraints { (make) in
-            make.width.equalTo(tableViewWidth)
-            make.top.bottom.equalToSuperview()
-            make.left.equalTo(pickTaskView.snp.right)
-        }
-        newTaskView.cancelButton.tap.subscribe(onNext: { [weak self] in
-            self?.goToInput()
-        })
-
-        newTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.newTaskView.taskLengthPicker.fiveMinuteButton.length else {
-                return
-            }
-            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
-            self?.newTaskView.input.text = ""
-        })
-        newTaskView.taskLengthPicker.fifteenMinuteButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.newTaskView.taskLengthPicker.fifteenMinuteButton.length else {
-                return
-            }
-            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
-            self?.newTaskView.input.text = ""
-        })
-        newTaskView.taskLengthPicker.thirtyMinuteButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.newTaskView.taskLengthPicker.thirtyMinuteButton.length else {
-                return
-            }
-            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
-            self?.newTaskView.input.text = ""
-        })
-        newTaskView.taskLengthPicker.oneHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.newTaskView.taskLengthPicker.oneHourButton.length else {
-                return
-            }
-            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
-            self?.newTaskView.input.text = ""
-        })
-        newTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.newTaskView.taskLengthPicker.threeHourButton.length else {
-                return
-            }
-            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
-            self?.newTaskView.input.text = ""
-        })
-        newTaskView.taskLengthPicker.fiveHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.newTaskView.taskLengthPicker.fiveHourButton.length else {
-                return
-            }
-            self?.newTask(title: self?.newTaskView.input.text ?? "", length: length)
-            self?.newTaskView.input.text = ""
-        })
-
-        scrollView.needsUpdateConstraints()
-        scrollView.layoutIfNeeded()
-        scrollView.contentOffset = CGPoint(x: tableViewWidth, y: 0)
-        return scrollView
-    }
-
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
-    }
-
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return headerHeight
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50 + 10 + 10
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let task = viewModel.task(indexPath: indexPath)
-        pick(task: task)
-    }
-
-    func goToInput() {
-        scrollView?.scrollRectToVisible(CGRect(x: tableViewWidth, y: 0, width: tableViewWidth, height: headerHeight), animated: true)
-    }
-
-    func goToNewTask() {
-        scrollView?.scrollRectToVisible(CGRect(x: tableViewWidth*2, y: 0, width: tableViewWidth, height: headerHeight), animated: true)
-    }
-
-    func goToCurrentTask() {
-        scrollView?.scrollRectToVisible(CGRect(x: 0, y: 0, width: tableViewWidth, height: headerHeight), animated: true)
-    }
-}
-
-extension MainViewController {
-    func pick(task: Task) {
-        self.task = task
-        currentTask.task = task
-        goToCurrentTask()
-    }
-    func pickTask(length: TaskLength) {
-        guard let task = viewModel.pickTask(withLength: length) else {
-            //no task at that length
-            return
-        }
-        pick(task: task)
-    }
-
-    func newTask(title: String, length: TaskLength) {
-        guard title.count > 0 else {
-            return
-        }
-        databaseService.save(title: title, length: length)
-    }
-
-    func cancelCurrentTask() {
-        task = nil
-        currentTask.task = nil
-        goToInput()
-    }
-
-    func doneCurrentTask() {
-        guard let task = task else {
-            return
-        }
-        databaseService.delete(task: task)
-        self.task = nil
-        goToInput()
-    }
-}
-
-struct Task: Codable {
-
-    var title: String
-    var id: String
-    var length: TaskLength
-
 }
