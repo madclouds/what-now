@@ -27,7 +27,7 @@ class CurrentTaskView: UIView {
         }
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 8
-        containerView.backgroundColor = UIColor(rgb: 0x087EFF)
+        containerView.backgroundColor = UIColor(named: "Card Background Color")
 
         label.text = "Current Task"
         label.textColor = .white
@@ -36,14 +36,15 @@ class CurrentTaskView: UIView {
             make.center.equalToSuperview()
         }
         containerView.addSubview(cancelButton)
+        cancelButton.tintColor = .white
         cancelButton.snp.makeConstraints { make in
                 make.top.right.equalToSuperview().inset(Const.padding)
         }
 
         containerView.addSubview(doneButton)
         doneButton.setTitle("Done", for: .normal)
-        doneButton.setTitleColor(.white, for: .normal)
-        doneButton.backgroundColor = .green
+        doneButton.setTitleColor(UIColor(named: "Primary Text Color"), for: .normal)
+        doneButton.backgroundColor = UIColor(named: "Done Button Background Color")
         doneButton.isHidden = true
         doneButton.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()

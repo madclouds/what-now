@@ -23,7 +23,7 @@ class InputView: UIView {
         }
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 8
-        containerView.backgroundColor = UIColor(rgb: 0xFF1B1B)
+        containerView.backgroundColor = UIColor(named: "Card Background Color")
 
         containerView.addSubview(taskLengthPicker)
         taskLengthPicker.snp.makeConstraints { make in
@@ -43,6 +43,7 @@ class InputView: UIView {
         }
 
         containerView.addSubview(newTaskButton)
+        newTaskButton.tintColor = .white
         newTaskButton.snp.makeConstraints { make in
             make.top.right.equalToSuperview().inset(Const.padding)
         }

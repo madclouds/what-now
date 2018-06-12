@@ -22,7 +22,7 @@ class NewTaskView: UIView {
         }
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 8
-        containerView.backgroundColor = UIColor(rgb: 0x34F355)
+        containerView.backgroundColor = UIColor(named: "Card Background Color")
 
         containerView.addSubview(taskLengthPicker)
         taskLengthPicker.snp.makeConstraints { (make) in
@@ -52,6 +52,7 @@ class NewTaskView: UIView {
         }
 
         containerView.addSubview(cancelButton)
+        cancelButton.tintColor = .white
         cancelButton.snp.makeConstraints { (make) in
             make.top.left.equalToSuperview().offset(Const.padding)
         }

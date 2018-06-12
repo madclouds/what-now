@@ -14,14 +14,14 @@ class TaskLengthButton: UIView {
         self.length = taskLength
         super.init(frame: .zero)
         clipsToBounds = true
-        backgroundColor = .blue
+        backgroundColor = UIColor(named: "Circle Time Button Background Color")
 
         let titleLabel = UILabel()
         addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
-        titleLabel.textColor = .white
+        titleLabel.textColor = UIColor(named: "Circle Time Button Text Color")
         titleLabel.textAlignment = .center
         titleLabel.text = taskLength.title
 

@@ -32,8 +32,19 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        view.backgroundColor = UIColor(named: "Main Background Color")
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.tableFooterView = UIView()
+        tableView.backgroundColor = UIColor(named: "Table Background Color")
+        tableView.separatorColor = .clear
+        tableView.register(TaskTableViewCell.self, forCellReuseIdentifier: TaskTableViewCell.identifier)
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
 
         view.addSubview(cardContainer)
         cardContainer.snp.makeConstraints { (make) in
@@ -41,18 +52,7 @@ class MainViewController: UIViewController {
             make.height.equalTo(headerHeight)
         }
 
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalToSuperview()
-            make.top.equalTo(cardContainer.snp.bottom)
-        }
-        view.backgroundColor = .lightGray
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.tableFooterView = UIView()
         setupInput()
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
     }
     @objc func dismissKeyboard() {
         view.endEditing(true)
@@ -78,6 +78,11 @@ class MainViewController: UIViewController {
 
 extension MainViewController {
     func setupInput() {
+
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+
         cardContainer.newTaskView.cancelButton.tap.subscribe(onNext: { [weak self] in
             self?.cardContainer.goToInput()
         })
@@ -184,24 +189,24 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
         let task = viewModel.task(indexPath: indexPath)
-        cell.textLabel?.text = task.title
-        let icon = TaskLengthButton(taskLength: task.length)
-        cell.contentView.addSubview(icon)
-        icon.snp.makeConstraints { (make) in
-            make.centerY.equalToSuperview()
-            make.right.equalToSuperview().inset(10)
-        }
+        cell.title.text = task.title
         return cell
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView()
+    }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50 + 10 + 10
+        return 60 + 10 + 10
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 180
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
