@@ -9,8 +9,9 @@
 import UIKit
 
 class MainFactory {
-    func createMainModelView() -> MainViewController {
-        let databaseService = FirebaseDatabaseService()
+    func createMainModelViewController() -> MainViewController {
+//        let databaseService = FirebaseDatabaseService()
+        let databaseService = LocalStorageDatabaseService()
         let mainViewModel = MainViewModel(databaseService: databaseService)
         return MainViewController(databaseService: databaseService, viewModel: mainViewModel)
     }

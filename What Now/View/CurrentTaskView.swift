@@ -37,6 +37,7 @@ class CurrentTaskView: UIView {
         }
         containerView.addSubview(cancelButton)
         cancelButton.tintColor = .white
+        cancelButton.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
         cancelButton.snp.makeConstraints { make in
                 make.top.right.equalToSuperview().inset(Const.padding)
         }

@@ -9,14 +9,21 @@
 import UIKit
 
 class TaskLengthPicker: UIView {
-    let fiveMinuteButton = TaskLengthButton(taskLength: .fiveMinute)
-    let fifteenMinuteButton = TaskLengthButton(taskLength: .fifteenMinute)
-    let thirtyMinuteButton = TaskLengthButton(taskLength: .thirtyMinute)
-    let oneHourButton = TaskLengthButton(taskLength: .oneHour)
-    let threeHourButton = TaskLengthButton(taskLength: .threeHour)
-    let fiveHourButton = TaskLengthButton(taskLength: .fiveHour)
+    let oneMinuteButton = TaskLengthButton()
+    let fiveMinuteButton = TaskLengthButton()
+    let fifteenMinuteButton = TaskLengthButton()
+    let thirtyMinuteButton = TaskLengthButton()
+    let oneHourButton = TaskLengthButton()
+    let fiveHourButton = TaskLengthButton()
     override init(frame: CGRect) {
         super.init(frame: frame)
+
+        oneMinuteButton.length = .oneMinute
+        fiveMinuteButton.length = .fiveMinute
+        fifteenMinuteButton.length = .fifteenMinute
+        thirtyMinuteButton.length = .thirtyMinute
+        oneHourButton.length = .oneHour
+        fiveHourButton.length = .fiveHour
 
         let contentView = UIStackView(frame: CGRect.zero)
         contentView.axis = .horizontal
@@ -27,10 +34,15 @@ class TaskLengthPicker: UIView {
             make.edges.equalToSuperview()
         }
         let padding = 5
-
+        contentView.addArrangedSubview(oneMinuteButton)
+        oneMinuteButton.snp.makeConstraints { (make) in
+            make.top.left.bottom.equalToSuperview()
+            make.width.equalTo(contentView.snp.height)
+        }
         contentView.addArrangedSubview(fiveMinuteButton)
         fiveMinuteButton.snp.makeConstraints { (make) in
             make.left.top.bottom.equalToSuperview()
+            make.left.equalTo(oneMinuteButton.snp.right).offset(padding)
             make.width.equalTo(contentView.snp.height)
         }
         contentView.addArrangedSubview(fifteenMinuteButton)
@@ -51,16 +63,10 @@ class TaskLengthPicker: UIView {
             make.left.equalTo(thirtyMinuteButton.snp.right).offset(padding)
             make.width.equalTo(contentView.snp.height)
         }
-        contentView.addArrangedSubview(threeHourButton)
-        threeHourButton.snp.makeConstraints { (make) in
-            make.top.bottom.equalToSuperview()
-            make.left.equalTo(oneHourButton.snp.right).offset(padding)
-            make.width.equalTo(contentView.snp.height)
-        }
         contentView.addArrangedSubview(fiveHourButton)
         fiveHourButton.snp.makeConstraints { (make) in
             make.top.bottom.equalToSuperview()
-            make.left.equalTo(threeHourButton.snp.right).offset(padding)
+            make.left.equalTo(oneHourButton.snp.right).offset(padding)
             make.width.equalTo(contentView.snp.height)
         }
     }

@@ -86,7 +86,9 @@ extension MainViewController {
         cardContainer.newTaskView.cancelButton.tap.subscribe(onNext: { [weak self] in
             self?.cardContainer.goToInput()
         })
-        //Todo: this doesn't feel right.  I would think there's a better way to subscribe here
+        //Todo: Continious Integration?  CirlceCI == $.  Seen Xcode server/bot?  Fastlane?
+        // https://developer.apple.com/library/archive/documentation/IDEs/Conceptual/xcode_guide-continuous_integration/ConfigureBots.html
+        //Todo: This doesn't feel right.  I would think there's a better way to subscribe here
         cardContainer.newTaskView.taskLengthPicker.fiveMinuteButton.tap.subscribe(onNext: { [weak self] in
             guard let length = self?.cardContainer.newTaskView.taskLengthPicker.fiveMinuteButton.length else {
                 return
@@ -115,8 +117,8 @@ extension MainViewController {
             self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
             self?.cardContainer.newTaskView.input.text = ""
         })
-        cardContainer.newTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.threeHourButton.length else {
+        cardContainer.newTaskView.taskLengthPicker.oneMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.newTaskView.taskLengthPicker.oneMinuteButton.length else {
                 return
             }
             self?.newTask(title: self?.cardContainer.newTaskView.input.text ?? "", length: length)
@@ -167,8 +169,8 @@ extension MainViewController {
             }
             self?.pickTask(length: length)
         })
-        cardContainer.pickTaskView.taskLengthPicker.threeHourButton.tap.subscribe(onNext: { [weak self] in
-            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.threeHourButton.length else {
+        cardContainer.pickTaskView.taskLengthPicker.oneMinuteButton.tap.subscribe(onNext: { [weak self] in
+            guard let length = self?.cardContainer.pickTaskView.taskLengthPicker.oneMinuteButton.length else {
                 return
             }
             self?.pickTask(length: length)
@@ -192,6 +194,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: TaskTableViewCell.identifier, for: indexPath) as! TaskTableViewCell
         let task = viewModel.task(indexPath: indexPath)
         cell.title.text = task.title
+        cell.length = task.length
         return cell
     }
 
@@ -216,6 +219,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+
+//Todo: Should these methods be in the controller?
 extension MainViewController {
     func pick(task: Task) {
         self.task = task
@@ -234,7 +239,6 @@ extension MainViewController {
         guard title.count > 0 else {
             return
         }
-        view.endEditing(true)
         databaseService.save(title: title, length: length)
     }
 
@@ -248,18 +252,31 @@ extension MainViewController {
         guard let task = task else {
             return
         }
+        var savedMinutes: Float = 0
+        if let oldMinutes = UserDefaults.standard.value(forKey: "MeaningfulMinutes") as? Float {
+            savedMinutes = oldMinutes
+        }
+
+        savedMinutes += task.length.length
+        UserDefaults.standard.set(savedMinutes, forKey: "MeaningfulMinutes")
         databaseService.delete(task: task)
+        cardContainer.currentTask.task = nil
         self.task = nil
         goTo()
     }
 }
 
-struct Task: Codable {
+struct Task: Codable, Equatable {
 
     var title: String
     var id: String
     var length: TaskLength
 
+    static func == (lhs: Task, rhs: Task) -> Bool {
+        return
+            lhs.title == rhs.title &&
+            lhs.length.length == rhs.length.length
+    }
 }
 
 struct Const {
@@ -269,8 +286,9 @@ struct Const {
 enum TaskLength: Codable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let title = try values.decode(Float.self, forKey: .length)
-        switch title {
+        let length = try values.decode(Float.self, forKey: .length)
+        switch length {
+        case 1: self = .oneMinute
         case 5: self = .fiveMinute
         case 15: self = .fifteenMinute
         case 30: self = .thirtyMinute
@@ -288,6 +306,7 @@ enum TaskLength: Codable {
         try container.encode(subTitle, forKey: .subTitle)
     }
 
+    case oneMinute
     case fiveMinute
     case fifteenMinute
     case thirtyMinute
@@ -295,10 +314,11 @@ enum TaskLength: Codable {
     case threeHour
     case fiveHour
 
-    static let all: [TaskLength] = [.fiveMinute, .fifteenMinute, .thirtyMinute, .oneHour, .threeHour, .fiveHour]
+    static let all: [TaskLength] = [.oneMinute, .fiveMinute, .fifteenMinute, .thirtyMinute, .oneHour, .threeHour, .fiveHour]
 
     var title: String {
         switch self {
+        case .oneMinute: return "1"
         case .fiveMinute: return "5"
         case .fifteenMinute: return "15"
         case .thirtyMinute: return "30"
@@ -310,6 +330,7 @@ enum TaskLength: Codable {
 
     var subTitle: String {
         switch self {
+        case .oneMinute: return "min"
         case .fiveMinute: return "min"
         case .fifteenMinute: return "min"
         case .thirtyMinute: return "min"
@@ -321,6 +342,7 @@ enum TaskLength: Codable {
 
     var length: Float {
         switch self {
+        case .oneMinute: return 1
         case .fiveMinute: return 5
         case .fifteenMinute: return 15
         case .thirtyMinute: return 30

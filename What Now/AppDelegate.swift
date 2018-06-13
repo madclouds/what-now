@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         Auth.auth().signInAnonymously()
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = MainFactory().createMainModelView()
+        window.rootViewController = MainFactory().createMainModelViewController()
         window.makeKeyAndVisible()
         self.window = window
         return true

@@ -10,11 +10,9 @@ import Snail
 
 protocol DatabaseService {
 
-    var observable: Observable<Void> { get set }  //Todo: I want an observerable to update the table view when new data is loaded
+    var observable: Observable<Void> { get set }  //Todo: I want an observerable to update the table view when new data is loaded  - I think I got this
 
     func save(title: String, length: TaskLength)
-
-    func update(task: Task)
 
     func delete(task: Task)
 

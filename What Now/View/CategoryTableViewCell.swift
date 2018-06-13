@@ -1,7 +1,7 @@
 import UIKit
 
-class TaskTableViewCell: UITableViewCell {
-    static let identifier = "TaskTableViewCellIdentifier"
+class CategoryTableViewCell: UITableViewCell {
+    static let identifier = "CategoryTableViewCellIdentifier"
     let title = UILabel()
     private let cardView = UIView()
     var length: TaskLength? {

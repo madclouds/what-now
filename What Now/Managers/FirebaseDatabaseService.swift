@@ -51,10 +51,6 @@ class FirebaseDatabaseService: DatabaseService {
         }
     }
 
-    func update(task: Task) {
-        //do update
-    }
-
     func delete(task: Task) {
         if let user = Auth.auth().currentUser {
             db.collection("tasks").document(user.uid).collection("tasks").document(task.id).delete()

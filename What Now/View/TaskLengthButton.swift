@@ -8,34 +8,36 @@
 
 import UIKit
 class TaskLengthButton: UIView {
-    var length: TaskLength
+    let titleLabel = UILabel()
+    let subTitleLabel = UILabel()
+    var length: TaskLength? {
+        didSet {
+            self.titleLabel.text = length?.title
+            self.subTitleLabel.text = length?.subTitle
+        }
+    }
 
-    init(taskLength: TaskLength) {
-        self.length = taskLength
+    init() {
         super.init(frame: .zero)
         clipsToBounds = true
         backgroundColor = UIColor(named: "Circle Time Button Background Color")
 
-        let titleLabel = UILabel()
         addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
         titleLabel.textColor = UIColor(named: "Circle Time Button Text Color")
         titleLabel.textAlignment = .center
-        titleLabel.text = taskLength.title
 
-        let subTitleLabel = UILabel()
         addSubview(subTitleLabel)
         subTitleLabel.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(15)
         }
-        subTitleLabel.textColor = .white
+        subTitleLabel.textColor = UIColor(named: "Circle Time Button Text Color")
         subTitleLabel.textAlignment = .center
         subTitleLabel.font = UIFont(descriptor: subTitleLabel.font.fontDescriptor, size: 8)
         subTitleLabel.alpha = 0.8
-        subTitleLabel.text = taskLength.subTitle
     }
 
     required init?(coder aDecoder: NSCoder) {
