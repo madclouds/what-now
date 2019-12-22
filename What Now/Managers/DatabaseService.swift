@@ -9,9 +9,13 @@
 import Snail
 
 protocol DatabaseService {
+    //rename to tasksChanged
+    var onTasksChanged: Observable<[Task]> { get set }
 
-    var observable: Observable<Void> { get set }  //Todo: I want an observerable to update the table view when new data is loaded  - I think I got this
+    var saveTask: Observable<Task> {get set}
 
+    //save return an observerable (a new task).  Call save from a viewmodel you can display the error.
+    //while save happens, with using an observer, you can start/show a spinner and end it on error or on next
     func save(title: String, length: TaskLength)
 
     func delete(task: Task)

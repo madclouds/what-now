@@ -19,6 +19,7 @@
 
 #include <chrono>  // NOLINT(build/c++11)
 #include <functional>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -32,13 +33,24 @@ namespace util {
 // outlive the operation, but it *cannot* outlive the executor that created it.
 class DelayedOperation {
  public:
+  // Creates an empty `DelayedOperation` not associated with any actual
+  // operation. Calling `Cancel` on it is a no-op.
   DelayedOperation() {
+  }
+
+  // Returns whether this `DelayedOperation` is associated with an actual
+  // operation.
+  explicit operator bool() const {
+    return static_cast<bool>(cancel_func_);
   }
 
   // If the operation has not been run yet, cancels the operation. Otherwise,
   // this function is a no-op.
   void Cancel() {
-    cancel_func_();
+    if (cancel_func_) {
+      cancel_func_();
+      cancel_func_ = {};
+    }
   }
 
   // Internal use only.
@@ -49,8 +61,6 @@ class DelayedOperation {
  private:
   std::function<void()> cancel_func_;
 };
-
-namespace internal {
 
 // An interface to a platform-specific executor of asynchronous operations
 // (called tasks on other platforms).
@@ -81,8 +91,21 @@ class Executor {
     Operation operation;
   };
 
-  virtual ~Executor() {
-  }
+  // Creates a new serial Executor of the platform-appropriate type, and gives
+  // it the given label, if the implementation supports it.
+  //
+  // Note that this method has multiple definitions, depending on the platform.
+  static std::unique_ptr<Executor> CreateSerial(const char* label);
+
+  // Creates a new concurrent Executor of the platform-appropriate type, with
+  // at least the given number of threads, and gives it the given label, if the
+  // implementation supports it.
+  //
+  // Note that this method has multiple definitions, depending on the platform.
+  static std::unique_ptr<Executor> CreateConcurrent(const char* label,
+                                                    int threads);
+
+  virtual ~Executor() = default;
 
   // Schedules the `operation` to be asynchronously executed as soon as
   // possible, in FIFO order.
@@ -121,7 +144,6 @@ class Executor {
   virtual absl::optional<TaggedOperation> PopFromSchedule() = 0;
 };
 
-}  // namespace internal
 }  // namespace util
 }  // namespace firestore
 }  // namespace firebase

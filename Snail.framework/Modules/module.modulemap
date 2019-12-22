@@ -1,0 +1,11 @@
+framework module Snail {
+  umbrella header "Snail.h"
+
+  export *
+  module * { export * }
+}
+
+module Snail.Swift {
+    header "Snail-Swift.h"
+    requires objc
+}

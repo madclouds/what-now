@@ -2,13 +2,16 @@ import Firebase
 import Snail
 
 class LocalStorageDatabaseService: DatabaseService {
-    var observable: Observable<Void>
+    var saveTask: Observable<Task>
 
-    let kSavedTasks = "kSavedTasks"
+    var onTasksChanged: Observable<[Task]>
+
+    let kSavedTasks = "kSavedTasks-v1"
     var tasksFromServer: [Task] = []
     var tasks: [Task] = []
     init() {
-        self.observable = Observable<Void>()
+        self.onTasksChanged = Observable()
+        self.saveTask = Observable()
         if let savedData = UserDefaults.standard.value(forKey: kSavedTasks) as? Data {
             let decoder = JSONDecoder()
             if let data = NSKeyedUnarchiver.unarchiveObject(with: savedData) as? Data {
@@ -21,21 +24,25 @@ class LocalStorageDatabaseService: DatabaseService {
     func save(title: String, length: TaskLength) {
         let task = Task(title: title, id: "", length: length)
         tasks.append(task)
-        let encoder = JSONEncoder()
-        if let data = try? encoder.encode(tasks) {
-        let taskData = NSKeyedArchiver.archivedData(withRootObject: data)
-            UserDefaults.standard.set(taskData, forKey: kSavedTasks)
-            observable.on(.next(()))
-        }
+        tasksChanged()
     }
 
     func delete(task: Task) {
         if let indexToDelete = tasks.index(of: task) {
             tasks.remove(at: indexToDelete)
+            tasksChanged()
         }
-        observable.on(.next(()))
     }
 
+    private func tasksChanged() {
+        let encoder = JSONEncoder()
+        if let data = try? encoder.encode(tasks) {
+            let taskData = NSKeyedArchiver.archivedData(withRootObject: data)
+            UserDefaults.standard.set(taskData, forKey: kSavedTasks)
+            onTasksChanged.on(.next(tasks))
+        }
+
+    }
     func getTasks() -> [Task] {
         return tasks
     }

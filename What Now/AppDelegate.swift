@@ -8,17 +8,26 @@
 
 import UIKit
 import Firebase
+import Billboard
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    private let viewControllerFactory: ViewControllerFactory
     var window: UIWindow?
+
+    override init() {
+        Billboard.printSomething()
+        NotificationService.setUpLocalNotification()
+        let databaseServices = LocalStorageDatabaseService()
+        viewControllerFactory = ViewControllerFactory(databaseService: databaseServices)
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         Auth.auth().signInAnonymously()
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = MainFactory().createMainModelViewController()
+        window.rootViewController = viewControllerFactory.main()
         window.makeKeyAndVisible()
         self.window = window
         return true
