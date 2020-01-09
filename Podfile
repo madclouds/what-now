@@ -10,8 +10,4 @@ target 'What Now' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Auth'
 
-  pod 'SnapKit', '~> 5.0.0'
-
-
-
 end

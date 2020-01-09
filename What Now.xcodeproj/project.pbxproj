@@ -18,8 +18,6 @@
 		2210C02520C9ED5300D7C753 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02420C9ED5300D7C753 /* DatabaseService.swift */; };
 		2210C02720C9EE2A00D7C753 /* FirebaseDatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02620C9EE2A00D7C753 /* FirebaseDatabaseService.swift */; };
 		2210C02920CAEEA600D7C753 /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210C02820CAEEA600D7C753 /* CardContainer.swift */; };
-		2236355A20C722730089F3BC /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2236355820C722730089F3BC /* SnapKit.framework */; };
-		2263B7EF23A9B32E00EA5CA4 /* Snail.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2263B7EE23A9B32E00EA5CA4 /* Snail.framework */; };
 		2267925120D0B3F900A0E117 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2267925020D0B3F900A0E117 /* CategoryListViewController.swift */; };
 		2267925320D0B5A400A0E117 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2267925220D0B5A400A0E117 /* CategoryTableViewCell.swift */; };
 		2270DEE920D1A67A00D25866 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2270DEE820D1A67A00D25866 /* Task.swift */; };
@@ -41,6 +39,8 @@
 		22EF188D20F5C077004BB521 /* Billboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EF188C20F5C077004BB521 /* Billboard.swift */; };
 		22F4C00E20CF53B6003461EF /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F4C00D20CF53B6003461EF /* TaskTableViewCell.swift */; };
 		22F4C01020CF7E93003461EF /* LocalStorageDatabseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F4C00F20CF7E93003461EF /* LocalStorageDatabseService.swift */; };
+		22F9A26E23C55ED7003000EA /* Snail.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22F9A26D23C55ED7003000EA /* Snail.framework */; };
+		22F9A26F23C55ED7003000EA /* Snail.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22F9A26D23C55ED7003000EA /* Snail.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC847DDA26D8CA6AB1E8B6E7 /* Pods_What_Now.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C399B1BE3FCD69644E3CCB3 /* Pods_What_Now.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +82,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				22F9A26F23C55ED7003000EA /* Snail.framework in Embed Frameworks */,
 				22EF188520F5BFF0004BB521 /* Billboard.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -101,8 +102,6 @@
 		2210C02420C9ED5300D7C753 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		2210C02620C9EE2A00D7C753 /* FirebaseDatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDatabaseService.swift; sourceTree = "<group>"; };
 		2210C02820CAEEA600D7C753 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
-		2236355820C722730089F3BC /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
-		2263B7EE23A9B32E00EA5CA4 /* Snail.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Snail.framework; sourceTree = "<group>"; };
 		2267925020D0B3F900A0E117 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
 		2267925220D0B5A400A0E117 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		2270DEE820D1A67A00D25866 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -129,6 +128,7 @@
 		22EF188C20F5C077004BB521 /* Billboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Billboard.swift; sourceTree = "<group>"; };
 		22F4C00D20CF53B6003461EF /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		22F4C00F20CF7E93003461EF /* LocalStorageDatabseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageDatabseService.swift; sourceTree = "<group>"; };
+		22F9A26D23C55ED7003000EA /* Snail.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Snail.framework; path = Carthage/Build/iOS/Snail.framework; sourceTree = "<group>"; };
 		2C399B1BE3FCD69644E3CCB3 /* Pods_What_Now.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_What_Now.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EB72CE7E4CE7E93FC867395 /* Pods-What Now.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-What Now.release.xcconfig"; path = "Pods/Target Support Files/Pods-What Now/Pods-What Now.release.xcconfig"; sourceTree = "<group>"; };
 		E543FA92C76B947952C6AC22 /* Pods-What Now.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-What Now.debug.xcconfig"; path = "Pods/Target Support Files/Pods-What Now/Pods-What Now.debug.xcconfig"; sourceTree = "<group>"; };
@@ -139,10 +139,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2236355A20C722730089F3BC /* SnapKit.framework in Frameworks */,
 				22EF188420F5BFF0004BB521 /* Billboard.framework in Frameworks */,
-				2263B7EF23A9B32E00EA5CA4 /* Snail.framework in Frameworks */,
 				DC847DDA26D8CA6AB1E8B6E7 /* Pods_What_Now.framework in Frameworks */,
+				22F9A26E23C55ED7003000EA /* Snail.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,8 +287,7 @@
 		22E1907320C6D93500601014 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2263B7EE23A9B32E00EA5CA4 /* Snail.framework */,
-				2236355820C722730089F3BC /* SnapKit.framework */,
+				22F9A26D23C55ED7003000EA /* Snail.framework */,
 				2C399B1BE3FCD69644E3CCB3 /* Pods_What_Now.framework */,
 			);
 			name = Frameworks;
@@ -792,7 +790,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.erikbye.whatnow;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.erikbye.What-Now";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
@@ -822,7 +820,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.erikbye.whatnow;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.erikbye.What-Now";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
